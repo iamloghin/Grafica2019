@@ -13,25 +13,29 @@
 
 // dimensiunea ferestrei in pixeli
 #define DIM 300
+const auto pi = 4 * atan(1);
 
 unsigned char prev_key;
 
 // graficul functiei 
 // $f(x) = \bar sin(x) \bar \cdot e^{-sin(x)}, x \in \langle 0, 8 \cdot \pi \rangle$, 
-void Display1() {
-	double pi = 4 * atan(1);
-	double xmax = 8 * pi;
-	double ymax = exp(1.1);
-	double ratia = 0.05;
+void display1() {
+	const auto max_x = 8 * pi;
+	const auto max_y = exp(1.1);
+	const auto ratio = 0.05;
+	double x = 0;
 
 	// afisarea punctelor propriu-zise precedata de scalare
-	glColor3f(1,0.1,0.1); // rosu
 	glBegin(GL_LINE_STRIP); 
-		for (double x = 0; x < xmax; x += ratia) {
-		double x1 = x / xmax;
-		double y1 = (fabs(sin(x)) * exp(-sin(x))) / ymax;
+		while(true) {
+			if(x >= max_x) break;
 
-		glVertex2f(x1,y1);
+			const auto output_x = x / max_x;
+			const auto output_y = (fabs(sin(x)) * exp(-sin(x))) / max_y;
+
+			x += ratio;
+
+			glVertex2f(output_x, output_y);
 		}
 	glEnd();
 }
@@ -41,60 +45,54 @@ void Display1() {
 // $x = a - b \cdot cos(t), y = a \cdot tg(t) - b \cdot sin(t)$. unde
 // $t \in (-\pi / 2, \pi / 2)$
 void Display2() {
-	double xmax, ymax, xmin, ymin;
+	double min_y;
 	double a = 1, b = 2;
-	double pi = 4 * atan(1);
-	double ratia = 0.05;
+	const auto ratio = 0.05;
 
 	// calculul valorilor maxime/minime ptr. x si y
 	// aceste valori vor fi folosite ulterior la scalare
-	xmax = a - b - 1;
-	xmin = a + b + 1;
-	ymax = ymin = 0;
+	auto max_x = a - b - 1;
+	auto min_x = a + b + 1;
+	auto max_y = min_y = 0;
 
-	for (auto t = - pi/2 + ratia; t < pi / 2; t += ratia) {
+	for (auto t = - pi/2 + ratio; t < pi / 2; t += ratio) {
 		double x1, y1, x2, y2;
 		x1 = a + b * cos(t);
-		xmax = (xmax < x1) ? x1 : xmax;
-		xmin = (xmin > x1) ? x1 : xmin;
+		max_x = (max_x < x1) ? x1 : max_x;
+		min_x = (min_x > x1) ? x1 : min_x;
 
 		x2 = a - b * cos(t);
-		xmax = (xmax < x2) ? x2 : xmax;
-		xmin = (xmin > x2) ? x2 : xmin;
+		max_x = (max_x < x2) ? x2 : max_x;
+		min_x = (min_x > x2) ? x2 : min_x;
 
 		y1 = a * tan(t) + b * sin(t);
-		ymax = (ymax < y1) ? y1 : ymax;
-		ymin = (ymin > y1) ? y1 : ymin;
+		max_y = (max_y < y1) ? y1 : max_y;
+		min_y = (min_y > y1) ? y1 : min_y;
 
 		y2 = a * tan(t) - b * sin(t);
-		ymax = (ymax < y2) ? y2 : ymax;
-		ymin = (ymin > y2) ? y2 : ymin;
+		max_y = (max_y < y2) ? y2 : max_y;
+		min_y = (min_y > y2) ? y2 : min_y;
 	}
 
-	xmax = (fabs(xmax) > fabs(xmin)) ? fabs(xmax) : fabs(xmin);
-	ymax = (fabs(ymax) > fabs(ymin)) ? fabs(ymax) : fabs(ymin);
+	max_x = (fabs(max_x) > fabs(min_x)) ? fabs(max_x) : fabs(min_x);
+	max_y = (fabs(max_y) > fabs(min_y)) ? fabs(max_y) : fabs(min_y);
 
 	// afisarea punctelor propriu-zise precedata de scalare
-	glColor3f(1,0.1,0.1); // rosu
 	glBegin(GL_LINE_STRIP);
-		for (auto t = - pi/2 + ratia; t < pi / 2; t += ratia) {
-			double x1, y1, x2, y2;
-			x1 = (a + b * cos(t)) / xmax;
-			x2 = (a - b * cos(t)) / xmax;
-			y1 = (a * tan(t) + b * sin(t)) / ymax;
-			y2 = (a * tan(t) - b * sin(t)) / ymax;
+		for (auto t = - pi/2 + ratio; t < pi / 2; t += ratio) {
+			double x1, y1;
+			x1 = (a + b * cos(t)) / max_x;
+			y1 = (a * tan(t) + b * sin(t)) / max_y;
 
 			glVertex2f(x1,y1);
 		}
 	glEnd();
 
 	glBegin(GL_LINE_STRIP); 
-		for (auto t = - pi/2 + ratia; t < pi / 2; t += ratia) {
-			double x1, y1, x2, y2;
-			x1 = (a + b * cos(t)) / xmax;
-			x2 = (a - b * cos(t)) / xmax;
-			y1 = (a * tan(t) + b * sin(t)) / ymax;
-			y2 = (a * tan(t) - b * sin(t)) / ymax;
+		for (auto t = - pi/2 + ratio; t < pi / 2; t += ratio) {
+			double x2, y2;
+			x2 = (a - b * cos(t)) / max_x;
+			y2 = (a * tan(t) - b * sin(t)) / max_y;
 
 			glVertex2f(x2,y2);
 		}
@@ -102,59 +100,64 @@ void Display2() {
 }
 
 void Display3() {
-	double ratia = 0.05;
-	double xmax = 100;
-	double ceilValue, floorValue;
+	const auto ratio = 0.05;
+	const auto max_x = 25;
+	double x = 0;
+	double y = 1;
 
-	glColor3f(1,0.1,0.1); // rosu
+
 	glBegin(GL_LINE_STRIP);
-		for (double x = 0; x <=xmax; x += ratia) {
-			double x1=x/xmax, y1;
-			if(x==0)
+		while (true) {
+			
+			if(x > max_x) break;
+
+			if(x > 0)
 			{
-				y1 = 1;
+				const auto ceil_value = ceil(x) - x;
+				const auto floor_value = x - floor(x);
+
+				y = (floor_value < ceil_value) ? (floor_value / x) : (ceil_value / x);
 			}
-			else {
-				ceilValue = ceil(x)-x;
-				floorValue = x-floor(x);
-				if(floorValue<ceilValue){
-					y1 = floorValue/x;
-				} else {
-					y1 = ceilValue/x;
-				}
-			}
-			glVertex2f(x1,y1);
+
+			const auto output_y = y - (ratio / 2);
+			const auto output_x = x / max_x;
+
+			x += ratio;
+
+			glVertex2f(output_x, output_y);
 		}
 	glEnd();
 }
 
 void Display4() {
-	double xmax = 100;
-	double ratia = 0.05;
-	double pi = 4 * atan(1.0);
-	double t,x1,y1, a= 0.3, b= 0.2;
+	const auto ratio = 0.005;
+	const auto a = 0.3, b = 0.2;
+	auto t = -pi + ratio;
 
-	glColor3f(1,0.1,0.1); // rosu
 	glBegin(GL_LINE_STRIP);
-		for(t = -pi+ratia; t < pi; t+=ratia){
-			x1 = 2*(a*cos(t)+b)*cos(t);
-			y1 = 2*(a*cos(t)+b)*sin(t);
-			glVertex2f(x1,y1);
+		while(true)
+		{
+			if(t >= pi) break;
+
+			const auto x = 2 * (a * cos(t) + b) * cos(t);
+			const auto y = 2 * (a * cos(t) + b) * sin(t);
+
+			t += ratio;
+
+			glVertex2f(x ,y);
 		}
 	glEnd();
 }
 
 void Display5() {
-	double xmax = 100;
-	double ratia = 0.05;
-	double pi = 4 * atan(1.0);
+	const auto ratio = 0.05;
+
 	double piPe2 = pi/2;
 	double piPe6 = pi/6;
 	double t, x1, y1, a = 0.2;
 
-	glColor3f(1,0.1,0.1); // rosu
 	glBegin(GL_LINE_STRIP);
-		for(t = -piPe2+ratia; t < piPe2; t+=ratia){
+		for(t = -piPe2+ratio; t < piPe2; t+=ratio){
 			if(t!=piPe6 || t!=(-piPe6)){
 				x1 = a / (4 * pow(cos(t), 2) -3);
 				y1 = (a*tan(t))/(4*pow(cos(t),2)-3);
@@ -168,14 +171,13 @@ void Display5() {
 }
 
 void Display55() {
+	const auto ratio = 0.05;
 	double a = 0.2;
-	double pi = 4 * atan(1.0), ratia = 0.01, xs[1000];
-	double ys[1000];
+	double ys[1000], xs[1000];
 	int n = 0;
 
-	glColor3f(1, 0.1, 0.1);
 	glBegin(GL_LINE_STRIP);
-		for (double t = -pi / 2 + ratia; t < -pi / 6; t += ratia) { //de ce e -pi/6
+		for (double t = -pi / 2 + ratio; t < -pi / 6; t += ratio) { //de ce e -pi/6
 			if (t == pi / 6 || t == -pi / 6) { continue; }
 			double x1, y1;
 			x1 = a / (4 * cos(t) * cos(t) - 3);
@@ -202,17 +204,16 @@ void Display55() {
 		for (int i = 0; i < n; i++)
 			glVertex2f(xs[i + 1], ys[i + 1]);
 	glEnd();
+
+	glColor3f(1,0.1,0.1); // rosu
 }
 
 void Display6() {
-	double xmax = 100;
-	double ratia = 0.05;
-	double pi = 4 * atan(1.0);
+	double ratio = 0.05;
 	double t,x1,y1, a=0.1, b=0.2;
 
-	glColor3f(1,0.1,0.1); // rosu
 	glBegin(GL_LINE_STRIP);
-		for(t = -(4*pi); t <= (4*pi); t+=ratia)
+		for(t = -(4*pi); t <= (4*pi); t+=ratio)
 		{
 			x1 = a*t-b*sin(t);
 			y1 = a-b*cos(t);
@@ -222,14 +223,11 @@ void Display6() {
 }
 
 void Display7() {
-	double xmax = 100;
-	double ratia = 0.05;
-	double pi = 4 * atan(1.0);
+	double ratio = 0.05;
 	double t,x1,y1, R=0.1, r=0.3;
 
-	glColor3f(1,0.1,0.1); // rosu
 	glBegin(GL_LINE_STRIP);
-		for(t = 0; t <= (2*pi); t+=ratia)
+		for(t = 0; t <= (2*pi); t+=ratio)
 {
 			x1 = (R+r)*cos((r/R)*t)-r*cos(t+(r/R)*t);
 			y1 = (R+r)*sin((r/R)*t)-r*sin(t+(r/R)*t);
@@ -239,14 +237,11 @@ void Display7() {
 }
 
 void Display8() {
-	double xmax = 100;
-	double ratia = 0.05;
-	double pi = 4 * atan(1.0);
+	double ratio = 0.05;
 	double t,x1,y1, R=0.1, r=0.3;
 
-	glColor3f(1,0.1,0.1); // rosu
 	glBegin(GL_LINE_STRIP);
-		for(t = 0; t <= (2*pi); t+=ratia){
+		for(t = 0; t <= (2*pi); t+=ratio){
 			x1 = (R-r)*cos((r/R)*t)-r*cos(t-(r/R)*t);
 			y1 = (R-r)*sin((r/R)*t)-r*sin(t-(r/R)*t);
 			glVertex2f(x1,y1);
@@ -255,21 +250,18 @@ void Display8() {
 }
 
 void Display9() {
-	double xmax = 100;
-	double ratia = 0.005;
-	double pi = 4 * atan(1.0);
+	double ratio = 0.005;
 	double piPe4 = pi/4;
 	double t,x1,y1, a=0.4,r;
 
-	glColor3f(1,0.1,0.1); // rosu
 	glBegin(GL_LINE_STRIP);
-		for(t = piPe4-ratia; t > -piPe4; t-=ratia){
+		for(t = piPe4-ratio; t > -piPe4; t-=ratio){
 			r=a*sqrt(2*cos(2*t));
 			x1 =r*cos(t);
 			y1 =r*sin(t);
 			glVertex2f(x1,y1);
 		}
-		for(t = -piPe4+ratia; t < piPe4; t+=ratia){
+		for(t = -piPe4+ratio; t < piPe4; t+=ratio){
 			r=-a*sqrt(2*cos(2*t));
 			x1 =r*cos(t);
 			y1 =r*sin(t);
@@ -279,15 +271,12 @@ void Display9() {
 }
 
 void Display10() {
-	double xmax = 100;
-	double ratia = 0.05;
-	double pi = 4 * atan(1.0);
+	double ratio = 0.05;
 	double piPe4 = pi/4;
 	double t,x1,y1, a=0.02,r;
-	glColor3f(1,0.1,0.1);
 
 	glBegin(GL_LINE_STRIP);
-		for(t = 0+ratia; t < (9999*pi); t+=ratia){
+		for(t = 0+ratio; t < (9999*pi); t+=ratio){
 			r=a*exp(1+t);
 			x1 =r*cos(t);
 			y1 =r*sin(t);
@@ -297,26 +286,28 @@ void Display10() {
 }
 
 
-void Init(void) {
+void init(void) {
 	glClearColor(1.0,1.0,1.0,1.0);
+
+	glColor3f(1,0.1,0.1);
 
 	glLineWidth(1);
 
-	glPointSize(4);
+// 	glPointSize(4);
 
 	glPolygonMode(GL_FRONT, GL_LINE);
 }
 
-void Display(void) {
+void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	switch(prev_key) {
 		case '1':
-		  Display1();
-		  break;
+			display1();
+			break;
 		case '2':
-		  Display2();
-		  break;
+			Display2();
+			break;
 		case '3':
 			Display3();
 			break;
@@ -333,7 +324,7 @@ void Display(void) {
 			Display7();
 			break;
 		case '8':
-		Display8();
+			Display8();
 			break;
 		case '9':
 			Display9();
@@ -348,16 +339,18 @@ void Display(void) {
 	glFlush();
 }
 
-void Reshape(int w, int h) {
-	glViewport(0, 0, (GLsizei) w, (GLsizei) h);
+void reshape(const int w, const int h) {
+	glViewport(0, 0, static_cast<GLsizei>(w), static_cast<GLsizei>(h));
 }
 
-void KeyboardFunc(unsigned char key, int x, int y) {
+void keyboard_func(const unsigned char key, int x, int y) {
 	prev_key = key;
+
 	if (key == 27) // escape
 	{
 		exit(0);
 	}
+
 	glutPostRedisplay();
 }
 
@@ -372,13 +365,13 @@ int main(int argc, char** argv) {
 
 	glutCreateWindow (argv[0]);
 
-	Init();
+	init();
 
-	glutReshapeFunc(Reshape);
+	glutReshapeFunc(reshape);
 
-	glutKeyboardFunc(KeyboardFunc);
+	glutKeyboardFunc(keyboard_func);
 
-	glutDisplayFunc(Display);
+	glutDisplayFunc(display);
 
 	glutMainLoop();
 
