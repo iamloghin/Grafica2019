@@ -150,35 +150,14 @@ void Display4() {
 }
 
 void Display5() {
-	const auto ratio = 0.05;
-
-	double piPe2 = pi/2;
-	double piPe6 = pi/6;
-	double t, x1, y1, a = 0.2;
-
-	glBegin(GL_LINE_STRIP);
-		for(t = -piPe2+ratio; t < piPe2; t+=ratio){
-			if(t!=piPe6 || t!=(-piPe6)){
-				x1 = a / (4 * pow(cos(t), 2) -3);
-				y1 = (a*tan(t))/(4*pow(cos(t),2)-3);
-			}
-			if(x1<0 && y1>0)
-			{
-				glVertex2f(x1,y1);
-			}
-		}
-	glEnd();
-}
-
-void Display55() {
-	const auto ratio = 0.05;
+	const auto ratio = 0.005;
 	double a = 0.2;
-	double ys[1000], xs[1000];
+	double ys[250], xs[250];
 	int n = 0;
 
+	glColor3f(0.0, 0.0, 0.0);
 	glBegin(GL_LINE_STRIP);
-		for (double t = -pi / 2 + ratio; t < -pi / 6; t += ratio) { //de ce e -pi/6
-			if (t == pi / 6 || t == -pi / 6) { continue; }
+		for (double t = -pi / 2 + ratio; t < -pi / 6; t += ratio) {
 			double x1, y1;
 			x1 = a / (4 * cos(t) * cos(t) - 3);
 			y1 = (a * tan(t)) / (4 * cos(t) * cos(t) - 3);
@@ -189,23 +168,16 @@ void Display55() {
 		}
 	glEnd();
 
-	for (int i = 0; i < n; i += 2) {
-		if (i > n / 4 && i < 3 * n / 4) { continue; }
-		glColor3f(1, 0.1, 0.1);
-		glBegin(GL_TRIANGLES);
-		glVertex2f(-1.0, 1.0);
-		glVertex2f(xs[i], ys[i]);
-		glVertex2f(xs[i + 1], ys[i + 1]);
-		glEnd();
-	}
 
-	glColor3f(0.0, 0.0, 0.0);  //pt linie
-	glBegin(GL_LINE_STRIP);
-		for (int i = 0; i < n; i++)
+	glColor3f(1, 0.1, 0.1);
+	glBegin(GL_TRIANGLES);
+		for (int i = 1; i < n - 1; i += 3) {
+			if (i > n / 4 && i < 3 * n / 4) continue;
+			glVertex2f(-1.0, 1.0);
+			glVertex2f(xs[i], ys[i]);
 			glVertex2f(xs[i + 1], ys[i + 1]);
+		}
 	glEnd();
-
-	glColor3f(1,0.1,0.1); // rosu
 }
 
 void Display6() {
