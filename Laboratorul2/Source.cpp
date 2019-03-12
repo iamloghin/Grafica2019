@@ -1,17 +1,9 @@
-// Daca se doreste utilizarea bibliotecii GLUT trebuie
-// inclus fisierul header GL/glut.h (acesta va include
-// la GL/gl.h si GL/glu.h, fisierele header pentru
-// utilizarea bibliotecii OpenGL). Functiile din biblioteca
-// OpenGL sunt prefixate cu gl, cele din GLU cu glu si
-// cele din GLUT cu glut.
-
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 
 #include <cstdlib>
 #include <cmath>
 #include <GL/glut.h>
 
-// dimensiunea ferestrei in pixeli
 #define DIM 300
 const auto pi = 4 * atan(1);
 
@@ -25,7 +17,6 @@ void display1() {
 	const auto ratio = 0.05;
 	double x = 0;
 
-	// afisarea punctelor propriu-zise precedata de scalare
 	glBegin(GL_LINE_STRIP); 
 		while(true) {
 			if(x >= max_x) break;
@@ -49,8 +40,6 @@ void Display2() {
 	double a = 1, b = 2;
 	const auto ratio = 0.05;
 
-	// calculul valorilor maxime/minime ptr. x si y
-	// aceste valori vor fi folosite ulterior la scalare
 	auto max_x = a - b - 1;
 	auto min_x = a + b + 1;
 	auto max_y = min_y = 0;
@@ -77,7 +66,6 @@ void Display2() {
 	max_x = (fabs(max_x) > fabs(min_x)) ? fabs(max_x) : fabs(min_x);
 	max_y = (fabs(max_y) > fabs(min_y)) ? fabs(max_y) : fabs(min_y);
 
-	// afisarea punctelor propriu-zise precedata de scalare
 	glBegin(GL_LINE_STRIP);
 		for (auto t = - pi/2 + ratio; t < pi / 2; t += ratio) {
 			double x1, y1;
@@ -120,7 +108,7 @@ void Display3() {
 			}
 
 			const auto output_y = y - (ratio / 2);
-			const auto output_x = x / max_x;
+			const auto output_x = (x / max_x);
 
 			x += ratio;
 
@@ -144,35 +132,45 @@ void Display4() {
 
 			t += ratio;
 
-			glVertex2f(x ,y);
+			const auto output_x = x - 0.05;
+
+			glVertex2f(output_x ,y);
 		}
 	glEnd();
 }
 
 void Display5() {
 	const auto ratio = 0.005;
-	double a = 0.2;
+	const auto a = 0.2;
 	double ys[250], xs[250];
-	int n = 0;
+	auto t = -pi / 2 + ratio;
+	auto n = 0;
 
 	glColor3f(0.0, 0.0, 0.0);
 	glBegin(GL_LINE_STRIP);
-		for (double t = -pi / 2 + ratio; t < -pi / 6; t += ratio) {
-			double x1, y1;
-			x1 = a / (4 * cos(t) * cos(t) - 3);
-			y1 = (a * tan(t)) / (4 * cos(t) * cos(t) - 3);
-			xs[n] = x1;
-			ys[n] = y1;
+		while (true) {
+			
+			if(t >= -pi / 6) break;
+
+			const auto output_x = a / (4 * cos(t) * cos(t) - 3);
+			const auto output_y = (a * tan(t)) / (4 * cos(t) * cos(t) - 3);
+			
+			xs[n] = output_x;
+			ys[n] = output_y;
 			n++;
-			glVertex2f(x1, y1);
+
+			t += ratio;
+
+			glVertex2f(output_x, output_y);
 		}
 	glEnd();
 
-
 	glColor3f(1, 0.1, 0.1);
 	glBegin(GL_TRIANGLES);
-		for (int i = 1; i < n - 1; i += 3) {
+		for (auto i = 1; i < n - 1; i += 3) {
+			
 			if (i > n / 4 && i < 3 * n / 4) continue;
+			
 			glVertex2f(-1.0, 1.0);
 			glVertex2f(xs[i], ys[i]);
 			glVertex2f(xs[i + 1], ys[i + 1]);
@@ -181,78 +179,125 @@ void Display5() {
 }
 
 void Display6() {
-	double ratio = 0.05;
-	double t,x1,y1, a=0.1, b=0.2;
+	const auto ratio = 0.05;
+	const auto a = 0.1, b = 0.2;
+	auto t = -(4 * pi);
 
 	glBegin(GL_LINE_STRIP);
-		for(t = -(4*pi); t <= (4*pi); t+=ratio)
+		while(true)
 		{
-			x1 = a*t-b*sin(t);
-			y1 = a-b*cos(t);
-			glVertex2f(x1,y1);
+			if(t > (4 * pi)) break;
+
+			const auto output_x = a * t - b * sin(t);
+			const auto output_y = a - b * cos(t);
+			
+			t += ratio;
+
+			glVertex2f(output_x, output_y);
 		}
 	glEnd();
 }
 
 void Display7() {
-	double ratio = 0.05;
-	double t,x1,y1, R=0.1, r=0.3;
+	const auto ratio = 0.05;
+	const auto R = 0.1;
+	const auto r = 0.3;
+	double t = 0;
 
 	glBegin(GL_LINE_STRIP);
-		for(t = 0; t <= (2*pi); t+=ratio)
-{
-			x1 = (R+r)*cos((r/R)*t)-r*cos(t+(r/R)*t);
-			y1 = (R+r)*sin((r/R)*t)-r*sin(t+(r/R)*t);
-			glVertex2f(x1,y1);
+		while(true)
+		{
+			if(t > (2 * pi)) break;
+
+			const auto output_x = (R + r) * cos((r / R) * t) - r * cos(t + (r / R) * t);
+			const auto output_y = (R + r) * sin((r / R) * t) - r * sin(t + (r / R) * t);
+			
+			t += ratio;
+
+			glVertex2f(output_x, output_y);
 		}
 	glEnd();
 }
 
 void Display8() {
-	double ratio = 0.05;
-	double t,x1,y1, R=0.1, r=0.3;
+	const auto ratio = 0.05;
+	const auto r = 0.3;
+	const auto R = 0.1;
+	double t = 0;
 
 	glBegin(GL_LINE_STRIP);
-		for(t = 0; t <= (2*pi); t+=ratio){
-			x1 = (R-r)*cos((r/R)*t)-r*cos(t-(r/R)*t);
-			y1 = (R-r)*sin((r/R)*t)-r*sin(t-(r/R)*t);
-			glVertex2f(x1,y1);
+		while(true){
+			
+			if(t > (2*pi)) break;
+
+			const auto output_x = (R-r) * cos((r/R)*t) - r * cos(t-(r/R)*t);
+			const auto output_y = (R-r) * sin((r/R)*t) - r * sin(t-(r/R)*t);
+			
+			t += ratio;
+
+			glVertex2f(output_x, output_y);
 		}
 	glEnd();
 }
 
 void Display9() {
-	double ratio = 0.005;
-	double piPe4 = pi/4;
-	double t,x1,y1, a=0.4,r;
+	const auto ratio = 0.005;
+	const auto a = 0.4;
+	auto t = (pi / 4) - ratio;
 
 	glBegin(GL_LINE_STRIP);
-		for(t = piPe4-ratio; t > -piPe4; t-=ratio){
-			r=a*sqrt(2*cos(2*t));
-			x1 =r*cos(t);
-			y1 =r*sin(t);
-			glVertex2f(x1,y1);
+		while(true){
+			
+			if(t <= -(pi / 4))
+			{
+				t = - (pi / 4) + ratio;
+				break;
+			}
+			
+			const auto r = a * sqrt(2*cos(2*t));
+			const auto output_x = r * cos(t);
+			const auto output_y = r * sin(t);
+			
+			t -= ratio;
+
+			glVertex2f(output_x, output_y);
 		}
-		for(t = -piPe4+ratio; t < piPe4; t+=ratio){
-			r=-a*sqrt(2*cos(2*t));
-			x1 =r*cos(t);
-			y1 =r*sin(t);
-			glVertex2f(x1,y1);
+
+		while(true)
+		{
+			if(t >= (pi / 4) - ratio) break;
+
+			const auto r = -a * sqrt(2*cos(2*t));
+			const auto output_x = r * cos(t);
+			const auto output_y = r * sin(t);
+			
+			t += ratio;
+
+			glVertex2f(output_x, output_y);
 		}
 	glEnd();
 }
 
 void Display10() {
-	double ratio = 0.05;
-	double piPe4 = pi/4;
-	double t,x1,y1, a=0.02,r;
+	const auto ratio = 0.05;
+	const auto a = 0.02;
+	auto t = ratio;
+	// is not necessary because it does not appear in view
+	const float infinity = pi * 1000;
 
 	glBegin(GL_LINE_STRIP);
-		for(t = 0+ratio; t < (9999*pi); t+=ratio){
-			r=a*exp(1+t);
-			x1 =r*cos(t);
-			y1 =r*sin(t);
-			glVertex2f(x1,y1);
+		while(true){
+
+			if(t >= 3) break;
+
+			const auto r = a * exp(1 + t);
+
+			const auto output_x = r * cos(t);
+			const auto output_y = r * sin(t);
+
+			t += ratio;
+
+			glVertex2f(output_x , output_y);
 		}
 	glEnd();
 }
@@ -265,7 +310,7 @@ void init(void) {
 
 	glLineWidth(1);
 
-// 	glPointSize(4);
+ 	glPointSize(4);
 
 	glPolygonMode(GL_FRONT, GL_LINE);
 }
