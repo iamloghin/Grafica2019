@@ -90,9 +90,9 @@ void Display2() {
 void Display3() {
 	const auto ratio = 0.05;
 	const auto max_x = 25;
+	const auto err = ratio / 2;
 	double x = 0;
 	double y = 1;
-
 
 	glBegin(GL_LINE_STRIP);
 		while (true) {
@@ -107,7 +107,7 @@ void Display3() {
 				y = (floor_value < ceil_value) ? (floor_value / x) : (ceil_value / x);
 			}
 
-			const auto output_y = y - (ratio / 2);
+			const auto output_y = y - err;
 			const auto output_x = (x / max_x);
 
 			x += ratio;
@@ -120,6 +120,7 @@ void Display3() {
 void Display4() {
 	const auto ratio = 0.005;
 	const auto a = 0.3, b = 0.2;
+	const auto err = 0.05;
 	auto t = -pi + ratio;
 
 	glBegin(GL_LINE_STRIP);
@@ -132,9 +133,10 @@ void Display4() {
 
 			t += ratio;
 
-			const auto output_x = x - 0.05;
+			const auto output_x = x - err;
+			const auto output_y = y + err;
 
-			glVertex2f(output_x ,y);
+			glVertex2f(output_x , output_y);
 		}
 	glEnd();
 }
@@ -275,6 +277,7 @@ void Display9() {
 
 			glVertex2f(output_x, output_y);
 		}
+
 	glEnd();
 }
 
