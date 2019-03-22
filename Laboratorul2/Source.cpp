@@ -123,7 +123,7 @@ void Display4() {
 	const auto err = 0.05;
 	auto t = -pi + ratio;
 
-	glBegin(GL_LINE_STRIP);
+	glBegin(GL_LINE_LOOP);
 		while(true)
 		{
 			if(t >= pi) break;
