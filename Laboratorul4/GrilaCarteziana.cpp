@@ -66,7 +66,7 @@ void GrilaCarteziana::drawGrid()
 void GrilaCarteziana::writePixel(int i, int j)
 {
 	glColor3f(0.1,0.1,0.1); 
-	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL );
+	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 
 	glBegin(GL_POLYGON);
 		for (auto k = 0; k <= 360; k += 5)
@@ -93,7 +93,7 @@ void GrilaCarteziana::pixels(int x, int y, int t, int dis)
 	}
 }
 
-void GrilaCarteziana::SegmentDreapta3 (int fromX, int fromY, int toX, int toY, unsigned int bold=0)
+void GrilaCarteziana::SegmentDreapta3(int fromX, int fromY, int toX, int toY, unsigned int bold=0)
 {
 	auto dx = toX - fromX, dy = toY - fromY;
 	auto x = fromX, y = fromY;
