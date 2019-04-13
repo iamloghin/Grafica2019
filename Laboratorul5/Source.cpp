@@ -2,10 +2,13 @@
 #include <GL/glut.h>
 #include <cstdlib>
 #include <list>
+
+#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+
 using namespace std;
 unsigned char prevKey;
 
-auto grila3 = new GrilaCarteziana(7);
+auto grila3 = new GrilaCarteziana(14);
 
 void Init(void) 
 {
@@ -21,11 +24,11 @@ void Display(void)
 
 	if(prevKey == '3')
 	{
-		//grila3->drawGrid();
+		grila3->draw_grid();
 		grila3->draw_poligon();
+		grila3->draw_pixels();
 	}
 
-	prevKey = 0;
 	glFlush();
 }
 
