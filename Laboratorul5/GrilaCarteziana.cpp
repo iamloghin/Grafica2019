@@ -69,17 +69,34 @@ auto GrilaCarteziana::draw_grid() const -> void
 	}
 }
 
-auto GrilaCarteziana::draw_point(int point_x, int point_y) const -> void
+auto GrilaCarteziana::draw_round_point(int point_x, int point_y) const -> void
 {
-	glPointSize(7.0);
-	glColor3f(1, 0.1, 0.1);
+	glColor3f(0.1, 0.1, 0.1);
+	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+
+	const auto point_x_position = -number_cells_ + point_x;
+	const auto point_y_position = -number_cells_ + point_y;
+
+	glBegin(GL_POLYGON);
+		for (auto k = 0; k <= 360; k += 5)
+		{
+			glVertex2f( (point_x_position * (2 - 2*DIST) + sin(k) * (DIST/2)) / (number_cells_ + DIST), 
+						(point_y_position * (2 - 2*DIST) + cos(k) * (DIST/2)) / (number_cells_ + DIST));
+		}
+	glEnd();
+}
+
+auto GrilaCarteziana::draw_square_point(int point_x, int point_y) const -> void
+{
+	glPointSize(14);
+	glColor3f(0.1, 0.1, 0.1);
 
 	const auto point_x_position = -number_cells_ + point_x;
 	const auto point_y_position = -number_cells_ + point_y;
 
 	auto output_x = static_cast<float>(point_x_position / (number_cells_ + DIST));
 	auto output_y = static_cast<float>(point_y_position / (number_cells_ + DIST));
-
+	
 	glBegin(GL_POINTS);
 		glVertex2f(output_x, output_y);
 	glEnd();
@@ -109,31 +126,33 @@ auto GrilaCarteziana::draw_poligon() -> void
 
 auto GrilaCarteziana::draw_pixels() -> void
 {
-	vector<float> x_points = poligon_coord_.get_x_points();
-	vector<float> y_points = poligon_coord_.get_y_points();
+	auto x_points = poligon_coord_.get_x_points();
+	auto y_points = poligon_coord_.get_y_points();
 	
-	for(int i=0; i<=14; i++)
-		for(int j=0; j<=14; j++)
+	for(auto i=0; i<= numar_; i++)
+		for(auto j=0; j<= numar_; j++)
 		{
-			auto x = pnpoly(poligon_coord_.get_pairs(), x_points, y_points, i, j);
-			if(!x) continue;
-			draw_point(i, j);
+			const auto in_pol = inside_the_polygon(poligon_coord_.get_pairs(), x_points, y_points, i, j);
+			if(!in_pol) continue;
+			draw_round_point(i, j);
 		}
 }
 
 
+// WIP
 // nvert: Number of vertices in the polygon. Whether to repeat the first vertex at the end has been discussed in the article referred above.
 // vertx, verty: Arrays containing the x- and y-coordinates of the polygon's vertices.
 // testx, testy: X- and y-coordinate of the test point.
 // c: 0 means even and 1 means odd
+// https://wrf.ecse.rpi.edu/Research/Short_Notes/pnpoly.html
 
 
-auto GrilaCarteziana::pnpoly(const int nvert, vector<float>& vertx, vector<float>& verty, float testx, float testy) -> int
+auto GrilaCarteziana::inside_the_polygon(const int pol_lines, vector<float>& pol_X_lines, vector<float>& pol_Y_lines, float point_x, float point_y) -> int
 {
   int i, j, c = 0;
-  for (i = 0, j = nvert-1; i < nvert; j = i++) {
-    if ( ((verty[i] > testy) != (verty[j] > testy)) &&
-	 (testx < (vertx[j] - vertx[i]) * (testy - verty[i]) / (verty[j] - verty[i]) + vertx[i]) )
+  for (i = 0, j = pol_lines-1; i < pol_lines; j = i++) {
+    if ( ((pol_Y_lines[i] > point_y) != (pol_Y_lines[j] > point_y)) &&
+	 (point_x < (pol_X_lines[j] - pol_X_lines[i]) * (point_y - pol_Y_lines[i]) / (pol_Y_lines[j] - pol_Y_lines[i]) + pol_X_lines[i]) )
        c = !c;
   }
   return c;

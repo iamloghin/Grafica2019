@@ -19,7 +19,7 @@ class GrilaCarteziana
 		int number_cells_;
 	    int numar_varfuri;
 		MyListPairs poligon_coord_;
-		static int pnpoly(const int nvert, vector<float>& vertx, vector<float>& verty, float testx, float testy);
+		static int inside_the_polygon(const int nvert, vector<float>& vertx, vector<float>& verty, float testx, float testy);
 	public:
 		GrilaCarteziana();
 		~GrilaCarteziana();
@@ -27,6 +27,7 @@ class GrilaCarteziana
 		void draw_grid() const;
 		void draw_poligon();
 		void draw_pixels();
-		void draw_point(int point_x, int point_y) const;
+		void draw_round_point(int point_x, int point_y) const;
+		void draw_square_point(int point_x, int point_y) const;
 };
 
