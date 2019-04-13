@@ -8,7 +8,7 @@
 using namespace std;
 unsigned char prevKey;
 
-auto grila3 = new GrilaCarteziana(14);
+auto grila = new GrilaCarteziana();
 
 void Init(void) 
 {
@@ -22,11 +22,20 @@ void Display(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 
+	if(prevKey == '1')
+	{
+		grila->draw_grid(14);
+		grila->draw_circle();
+	}
+	if(prevKey == '2')
+	{
+		grila->draw_grid(26);
+	}
 	if(prevKey == '3')
 	{
-		grila3->draw_grid();
-		grila3->draw_poligon();
-		grila3->draw_pixels();
+		grila->draw_grid(14);
+		grila->draw_poligon();
+		grila->draw_pixels();
 	}
 
 	glFlush();

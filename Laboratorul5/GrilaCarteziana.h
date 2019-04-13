@@ -1,9 +1,9 @@
 #pragma once
+#include "MyListPairs.h"
 #include <GL/glut.h>
 #include <complex>
 #include <string>
 #include <iostream>
-#include "MyListPairs.h"
 #include <fstream>
 #include <map>
 using namespace std; 
@@ -23,9 +23,9 @@ class GrilaCarteziana
 	public:
 		GrilaCarteziana();
 		~GrilaCarteziana();
-		explicit GrilaCarteziana(const int numar);
-		void draw_grid() const;
+		void draw_grid(const int numar);
 		void draw_poligon();
+		static void draw_circle();
 		void draw_pixels();
 		void draw_round_point(int point_x, int point_y) const;
 		void draw_square_point(int point_x, int point_y) const;
