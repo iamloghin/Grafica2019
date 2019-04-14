@@ -24,17 +24,17 @@ void Display(void)
 
 	if(prevKey == '1')
 	{
-		grila->draw_grid(15);
+		grila->draw_grid(15, 0.5);
 		grila->draw_ellipse_origin(13);
 	}
 	if(prevKey == '2')
 	{
-		grila->draw_grid(26);
+		grila->draw_grid(26, 1);
 		grila->draw_ellipse(13, 7, 13, 7);
 	}
 	if(prevKey == '3')
 	{
-		grila->draw_grid(14);
+		grila->draw_grid(14, 0.5);
 		grila->draw_poligon();
 		grila->draw_pixels();
 	}
