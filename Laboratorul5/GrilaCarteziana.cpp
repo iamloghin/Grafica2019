@@ -172,9 +172,35 @@ auto GrilaCarteziana::draw_ellipse(const int origin_x, const int origin_y, const
 			const auto output_x = cos(rad)*calculated_x_radius + output_origin_x;
 			const auto output_y = sin(rad)*calculated_y_radius + output_origin_y;
 			glVertex2f(output_x, output_y);
+
+
+			// quadrant 3
+			if (rad >= PI && rad <= (3 * PI) / 2)
+			{
+				// draw pixels
+
+			}
+
+
+			
 		}
 	glEnd();
-	draw_square_point(origin_x, origin_y, 4, "red");
+
+	for (auto j = number_ / 4 + 1; j >= 0; j--)
+	{
+		const float point_y_position = static_cast<float>((-number_cells_ + j) / (number_cells_ + dist_) - dist_margin_ / 2);
+		const float point_x_position = cos(asin((point_y_position - output_origin_y) / calculated_y_radius) - PI) * calculated_x_radius + output_origin_x;
+
+		for(auto i = 0; i <= number_ / 2; i++)
+		{
+			const float actual_x = static_cast<float>((-number_cells_ + i) / (number_cells_ + dist_) - dist_margin_ / 2);
+			if (actual_x >= point_x_position - 0.04)
+			{
+				draw_round_point(i, j, "");
+			}
+		}
+		draw_round_point(13, 0, "");
+	}
 }
 
 // https://community.khronos.org/t/how-to-draw-an-oval/13428
@@ -195,18 +221,15 @@ void GrilaCarteziana::draw_ellipse_origin(const int radius) const
 		{
 			const float rad = index * DEG2RAD;
 
-			// quadrant 3
-			if(rad >= PI && rad <= (3*PI)/2)
-			{
-				// draw pixels
-			}
-
 			const auto output_x = cos(rad)*calculated_radius - (1 - dist_margin_);
 			const auto output_y = sin(rad)*calculated_radius - (1 - dist_margin_);
+			
 			glVertex2f(output_x, output_y);
 		}
 	glEnd();
 	draw_square_point(0, 0, 4, "red");
+
+	
 }
 
 auto GrilaCarteziana::draw_pixels() -> void
