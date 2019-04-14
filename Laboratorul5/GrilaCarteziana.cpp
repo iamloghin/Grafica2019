@@ -1,11 +1,11 @@
 #include "GrilaCarteziana.h"
-ifstream infile("poligon.txt");
 
-GrilaCarteziana::GrilaCarteziana()
+GrilaCarteziana::GrilaCarteziana(const string& file_name)
 {
 	int x, y;
 	auto index = 0;
 
+	ifstream infile(file_name);
 	infile >> this->number_peaks_;
 
 	while (infile >> x >> y && number_peaks_ > 0)
@@ -235,6 +235,10 @@ auto GrilaCarteziana::inside_the_polygon(const int pol_lines, vector<float>& pol
        paritate = !paritate;
   }
   return paritate;
+}
+
+GrilaCarteziana::GrilaCarteziana()
+{
 }
 
 GrilaCarteziana::~GrilaCarteziana()

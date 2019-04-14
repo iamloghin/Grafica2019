@@ -16,17 +16,18 @@ using namespace std;
 class GrilaCarteziana
 {
 	private:
-	    int number_peaks_;
-		float dist_;
-		float number_;
-		float number_cells_;
-		float size_row_;
-		float dist_margin_;
+	    int number_peaks_{};
+		float dist_{};
+		float number_{};
+		float number_cells_{};
+		float size_row_{};
+		float dist_margin_{};
 		MyListPairs poligon_coord_;
 		static int inside_the_polygon(const int nvert, vector<float>& vertx, vector<float>& verty, float testx, float testy);
 	public:
 		GrilaCarteziana();
 	    ~GrilaCarteziana();
+	    GrilaCarteziana(const string& file_name);
 	    auto draw_grid(float numar, float dist) -> void;
 		auto draw_round_point(int point_x, int point_y, const string& color) const -> void;
 		auto draw_square_point(int point_x, int point_y, int point_size, const string& color) const -> void;

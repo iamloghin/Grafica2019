@@ -47,7 +47,7 @@ std::list<std::pair<int,int>> MyListPairs::get_element_type_list()
 
 std::vector<float> MyListPairs::get_x_points()
 {
-    std::vector<float> temp_array(6);
+    std::vector<float> temp_array(get_pairs());
 
 	auto k = 0;
     for (auto& it : this->container_)
@@ -62,7 +62,7 @@ std::vector<float> MyListPairs::get_x_points()
 
 std::vector<float> MyListPairs::get_y_points()
 {
-    std::vector<float> temp_array(6);
+    std::vector<float> temp_array(get_pairs());
 
 	auto k = 0;
     for (auto& it : this->container_)

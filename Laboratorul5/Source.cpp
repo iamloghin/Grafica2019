@@ -8,7 +8,7 @@
 using namespace std;
 unsigned char prevKey;
 
-auto grila = new GrilaCarteziana();
+auto grila = new GrilaCarteziana("poligon1.txt");
 
 void Init(void) 
 {
@@ -38,7 +38,13 @@ void Display(void)
 		grila->draw_poligon();
 		grila->draw_pixels();
 	}
-
+	if(prevKey == '4')
+	{
+		auto temp = new GrilaCarteziana("poligon2.txt");
+		temp->draw_grid(14, 0.5);
+		temp->draw_poligon();
+		temp->draw_pixels();
+	}
 	glFlush();
 }
 

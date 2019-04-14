@@ -135,7 +135,8 @@
     <ClInclude Include="MyListPairs.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="poligon.txt" />
+    <Text Include="poligon1.txt" />
+    <Text Include="poligon2.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

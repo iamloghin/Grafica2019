@@ -37,7 +37,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="poligon.txt">
+    <Text Include="poligon1.txt">
+      <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="poligon2.txt">
       <Filter>Source Files</Filter>
     </Text>
   </ItemGroup>
