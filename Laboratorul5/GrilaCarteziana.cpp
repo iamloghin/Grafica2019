@@ -77,8 +77,9 @@ auto GrilaCarteziana::draw_grid(const float numar, const float dist) -> void
 
 auto GrilaCarteziana::draw_round_point(const int point_x, const int point_y, const string& color) const -> void
 {
-	if(color == "red") glColor3f(1, 0.1, 0.1);
 	glColor3f(0.1, 0.1, 0.1);
+	if(color == "red") glColor3f(1, 0.1, 0.1);
+	if(color == "gray") glColor3f(0.2,0.2,0.2);
 	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 
 	const auto margin_distant_err = 2 - dist_margin_ * 2;
@@ -172,17 +173,6 @@ auto GrilaCarteziana::draw_ellipse(const int origin_x, const int origin_y, const
 			const auto output_x = cos(rad)*calculated_x_radius + output_origin_x;
 			const auto output_y = sin(rad)*calculated_y_radius + output_origin_y;
 			glVertex2f(output_x, output_y);
-
-
-			// quadrant 3
-			if (rad >= PI && rad <= (3 * PI) / 2)
-			{
-				// draw pixels
-
-			}
-
-
-			
 		}
 	glEnd();
 
@@ -196,10 +186,10 @@ auto GrilaCarteziana::draw_ellipse(const int origin_x, const int origin_y, const
 			const float actual_x = static_cast<float>((-number_cells_ + i) / (number_cells_ + dist_) - dist_margin_ / 2);
 			if (actual_x >= point_x_position - 0.04)
 			{
-				draw_round_point(i, j, "");
+				draw_round_point(i, j, "gray");
 			}
 		}
-		draw_round_point(13, 0, "");
+		draw_round_point(13, 0, "gray");
 	}
 }
 
