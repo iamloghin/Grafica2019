@@ -81,14 +81,22 @@ auto GrilaCarteziana::draw_round_point(const int point_x, const int point_y, con
 	glColor3f(0.1, 0.1, 0.1);
 	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 
+	const auto margin_distant_err = 2 - dist_margin_ * 2;
 	const auto point_x_position = -number_cells_ + point_x;
 	const auto point_y_position = -number_cells_ + point_y;
 
 	glBegin(GL_POLYGON);
-		for (auto index = 0; index <= 360; index += 5)
+		float angle = 0;
+		while(true)
 		{
-			glVertex2f( (point_x_position * (2 - 2*dist_) + sin(index) * (dist_/2)) / (number_cells_ + dist_), 
-						(point_y_position * (2 - 2*dist_) + cos(index) * (dist_/2)) / (number_cells_ + dist_));
+			if(angle >= 2*PI) break;
+
+			const float radius = 0.35;
+			const auto output_x = (point_x_position + radius * sin(angle)) / (number_cells_ + dist_);
+			const auto output_y = (point_y_position + radius * cos(angle)) / (number_cells_ + dist_);
+			glVertex2f(output_x, output_y);
+
+			angle += 0.01;
 		}
 	glEnd();
 }

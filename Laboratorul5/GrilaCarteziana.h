@@ -10,7 +10,7 @@ using namespace std;
 
 #define DIM 400
 #define def 10
-#define PI 3.14159
+#define PI 4*atan(1.0)
 #define DEG2RAD PI/180.0
 
 class GrilaCarteziana
