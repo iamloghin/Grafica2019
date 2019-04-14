@@ -169,7 +169,8 @@ auto GrilaCarteziana::draw_ellipse(const int origin_x, const int origin_y, const
 }
 
 // https://community.khronos.org/t/how-to-draw-an-oval/13428
-// raza: number of cells from the origin point (left down corner)
+// origin: point of the left down corner + table margin error
+// radius: number of cells from the origin
 
 void GrilaCarteziana::draw_ellipse_origin(const int radius) const
 {
