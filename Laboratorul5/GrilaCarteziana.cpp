@@ -1,53 +1,63 @@
 #include "GrilaCarteziana.h"
 ifstream infile("poligon.txt");
 
-
 GrilaCarteziana::GrilaCarteziana()
 {
 	int x, y;
 	auto index = 0;
 
-	infile >> this->numar_varfuri;
+	infile >> this->number_peaks_;
 
-	while (infile >> x >> y && numar_varfuri > 0)
+	while (infile >> x >> y && number_peaks_ > 0)
 	{
 		poligon_coord_.add_element(index++, element_type(x, y));
-		numar_varfuri--;
+		number_peaks_--;
 	}
 
 	infile.close();
 	poligon_coord_.display_elements();
 }
 
-auto GrilaCarteziana::draw_grid(const int numar) -> void
+auto GrilaCarteziana::draw_grid(const float numar) -> void
 {
-	this->numar_ = numar;
+	this->number_ = numar;
 	this->number_cells_ = numar / 2;
-	glLineWidth(1.0);
-	float i = -number_cells_;
-	const float dist_margin = 1 - (number_cells_ / (number_cells_ + DIST));
-	const auto start_x_point = -1 + dist_margin;
-	const auto end_x_point = 1 - dist_margin;
+	this->dist_margin_ = 1 - (number_cells_ / (number_cells_ + DIST));
+	const auto start_x_point = -1 + dist_margin_;
+	const auto end_x_point = 1 - dist_margin_;
 	
+	glLineWidth(1.0);
 	glColor3f(0.1,0.1,0.1);
+
+	auto i = -number_cells_;
+	auto set_row_size_counter = 0;
+		float common_y_point = 0;
+	float prev_y_value = 0;
 
 	// draw rows
 	while(true)
 	{
 		if(i > number_cells_) break;
 
-		const auto commonYPoint = static_cast<float>(i / (number_cells_ + DIST));
+		prev_y_value = common_y_point;
+		common_y_point = static_cast<float>(i / (number_cells_ + DIST));
 
         glBegin(GL_LINES); 
-			glVertex2f(start_x_point, commonYPoint);
-			glVertex2f(end_x_point, commonYPoint);
-		glEnd();  
+			glVertex2f(start_x_point, common_y_point);
+			glVertex2f(end_x_point, common_y_point);
+		glEnd();
+
+		if(set_row_size_counter == 2)
+		{
+			this->size_row_ = fabsf(prev_y_value - common_y_point);
+		}
 
 		i++;
+		set_row_size_counter++;
 	}
-
+ 
 	i = -number_cells_;
-
+ 
 	// draw coloumns
 	while(true)
 	{
@@ -64,8 +74,9 @@ auto GrilaCarteziana::draw_grid(const int numar) -> void
 	}
 }
 
-auto GrilaCarteziana::draw_round_point(int point_x, int point_y) const -> void
+auto GrilaCarteziana::draw_round_point(const int point_x, const int point_y, const string& color) const -> void
 {
+	if(color == "red") glColor3f(1, 0.1, 0.1);
 	glColor3f(0.1, 0.1, 0.1);
 	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 
@@ -73,21 +84,26 @@ auto GrilaCarteziana::draw_round_point(int point_x, int point_y) const -> void
 	const auto point_y_position = -number_cells_ + point_y;
 
 	glBegin(GL_POLYGON);
-		for (auto k = 0; k <= 360; k += 5)
+		for (auto index = 0; index <= 360; index += 5)
 		{
-			glVertex2f( (point_x_position * (2 - 2*DIST) + sin(k) * (DIST/2)) / (number_cells_ + DIST), 
-						(point_y_position * (2 - 2*DIST) + cos(k) * (DIST/2)) / (number_cells_ + DIST));
+			glVertex2f( (point_x_position * (2 - 2*DIST) + sin(index) * (DIST/2)) / (number_cells_ + DIST), 
+						(point_y_position * (2 - 2*DIST) + cos(index) * (DIST/2)) / (number_cells_ + DIST));
 		}
 	glEnd();
 }
 
-auto GrilaCarteziana::draw_square_point(int point_x, int point_y) const -> void
+auto GrilaCarteziana::draw_square_point(const int point_x, const int point_y, const int point_size, const string& color) const -> void
 {
-	glPointSize(14);
+	glPointSize(point_size);
 	glColor3f(0.1, 0.1, 0.1);
 
-	const auto point_x_position = -number_cells_ + point_x;
-	const auto point_y_position = -number_cells_ + point_y;
+	if(color == "red")
+	{
+		glColor3f(1, 0.1, 0.1);
+	}
+
+	const auto point_x_position = point_x + -number_cells_;
+	const auto point_y_position = point_y + -number_cells_;
 
 	const auto output_x = static_cast<float>(point_x_position / (number_cells_ + DIST));
 	const auto output_y = static_cast<float>(point_y_position / (number_cells_ + DIST));
@@ -119,10 +135,62 @@ auto GrilaCarteziana::draw_poligon() -> void
 	glEnd();
 }
 
-auto GrilaCarteziana::draw_circle() -> void
+auto GrilaCarteziana::draw_ellipse(const int origin_x, const int origin_y, const int radius_x, const int radius_y) const -> void
 {
+	const auto margin_distant_err = dist_margin_ * 2;
+
+	const auto cells_left_x = size_row_ * (number_ - radius_x);
+	const auto cells_left_y = size_row_ * (number_ - radius_y);
+
+	const auto calculated_x_radius = 2 - margin_distant_err - cells_left_x;
+	const auto calculated_y_radius = 2 - margin_distant_err - cells_left_y;
+
+
+	const auto origin_x_position = -number_cells_ + origin_x;
+	const auto origin_y_position = -number_cells_ + origin_y;
+
+	const auto output_origin_x = static_cast<float>(origin_x_position / (number_cells_ + DIST));
+	const auto output_origin_y = static_cast<float>(origin_y_position / (number_cells_ + DIST));
+
 	glLineWidth(3.0);
 	glColor3f(1, 0.1, 0.1);
+
+	glBegin(GL_LINE_LOOP);
+		for(auto index = 0; index < 360; index++)
+		{
+			const float rad = index * DEG2RAD;
+
+			const auto output_x = cos(rad)*calculated_x_radius + output_origin_x;
+			const auto output_y = sin(rad)*calculated_y_radius + output_origin_y;
+			glVertex2f(output_x, output_y);
+		}
+	glEnd();
+	draw_square_point(origin_x, origin_y, 4, "red");
+}
+
+// https://community.khronos.org/t/how-to-draw-an-oval/13428
+// raza: number of cells from the origin point (left down corner)
+
+void GrilaCarteziana::draw_ellipse_origin(const int radius) const
+{
+	const auto cells_left = size_row_ * (number_ - radius);
+	const auto margin_distant_err = dist_margin_ * 2;
+	const auto calculated_radius = 2 - margin_distant_err - cells_left;
+
+	glLineWidth(3.0);
+	glColor3f(1, 0.1, 0.1);
+
+	glBegin(GL_LINE_LOOP);
+		for(auto index = 0; index < 360; index++)
+		{
+			const float rad = index * DEG2RAD;
+
+			const auto output_x = cos(rad)*calculated_radius - (1 - dist_margin_);
+			const auto output_y = sin(rad)*calculated_radius - (1 - dist_margin_);
+			glVertex2f(output_x, output_y);
+		}
+	glEnd();
+	draw_square_point(0, 0, 4, "red");
 }
 
 auto GrilaCarteziana::draw_pixels() -> void
@@ -130,12 +198,12 @@ auto GrilaCarteziana::draw_pixels() -> void
 	auto x_points = poligon_coord_.get_x_points();
 	auto y_points = poligon_coord_.get_y_points();
 	
-	for(auto i=0; i<= numar_; i++)
-		for(auto j=0; j<= numar_; j++)
+	for(auto i = 0; i <= number_; i++)
+		for(auto j = 0; j <= number_; j++)
 		{
-			const auto in_pol = inside_the_polygon(poligon_coord_.get_pairs(), x_points, y_points, i, j);
-			if(!in_pol) continue;
-			draw_round_point(i, j);
+			const auto in_polygon = inside_the_polygon(poligon_coord_.get_pairs(), x_points, y_points, i, j);
+			if(!in_polygon) continue;
+			draw_round_point(i, j, "");
 		}
 }
 
@@ -144,19 +212,19 @@ auto GrilaCarteziana::draw_pixels() -> void
 // nvert: Number of vertices in the polygon. Whether to repeat the first vertex at the end has been discussed in the article referred above.
 // vertx, verty: Arrays containing the x- and y-coordinates of the polygon's vertices.
 // testx, testy: X- and y-coordinate of the test point.
-// c: 0 means even and 1 means odd
+// paritate: 0 means even and 1 means odd
 // https://wrf.ecse.rpi.edu/Research/Short_Notes/pnpoly.html
 
 
 auto GrilaCarteziana::inside_the_polygon(const int pol_lines, vector<float>& pol_X_lines, vector<float>& pol_Y_lines, float point_x, float point_y) -> int
 {
-  int i, j, c = 0;
+  int i, j, paritate = 0;
   for (i = 0, j = pol_lines-1; i < pol_lines; j = i++) {
     if ( ((pol_Y_lines[i] > point_y) != (pol_Y_lines[j] > point_y)) &&
 	 (point_x < (pol_X_lines[j] - pol_X_lines[i]) * (point_y - pol_Y_lines[i]) / (pol_Y_lines[j] - pol_Y_lines[i]) + pol_X_lines[i]) )
-       c = !c;
+       paritate = !paritate;
   }
-  return c;
+  return paritate;
 }
 
 GrilaCarteziana::~GrilaCarteziana()
