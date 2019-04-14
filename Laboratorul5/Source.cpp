@@ -26,6 +26,9 @@ void Display(void)
 	{
 		grila->draw_grid(15, 0.5);
 		grila->draw_ellipse_origin(13);
+
+			// Algoritmul Gupta-Sproull curs 2
+		//grila->conv_scan_pm_dreapta_antialiased(5,13,0,0);
 	}
 	if(prevKey == '2')
 	{

@@ -1,11 +1,15 @@
 #pragma once
 #include "MyListPairs.h"
 #include <GL/glut.h>
+#include <GL/gl.h>
 #include <complex>
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <map>
+#include<cmath>
+#include<cstdlib>
+
 using namespace std; 
 
 #define DIM 400
@@ -24,7 +28,7 @@ class GrilaCarteziana
 		float dist_margin_{};
 		MyListPairs poligon_coord_;
 		static int inside_the_polygon(const int nvert, vector<float>& vertx, vector<float>& verty, float testx, float testy);
-	public:
+    public:
 		GrilaCarteziana();
 	    ~GrilaCarteziana();
 	    GrilaCarteziana(const string& file_name);
@@ -35,5 +39,7 @@ class GrilaCarteziana
 	    auto draw_ellipse(int origin_x, int origin_y, int radius_x, int radius_y) const -> void;
 	    auto draw_ellipse_origin(int radius) const -> void;
 		void draw_pixels();
+		void intensificare_pixel(int x, int y, double length);
+	    void conv_scan_pm_dreapta_antialiased(int x0, int x1, int y0, int y1);
 };
 

@@ -195,6 +195,12 @@ void GrilaCarteziana::draw_ellipse_origin(const int radius) const
 		{
 			const float rad = index * DEG2RAD;
 
+			// quadrant 3
+			if(rad >= PI && rad <= (3*PI)/2)
+			{
+				// draw pixels
+			}
+
 			const auto output_x = cos(rad)*calculated_radius - (1 - dist_margin_);
 			const auto output_y = sin(rad)*calculated_radius - (1 - dist_margin_);
 			glVertex2f(output_x, output_y);
@@ -236,6 +242,57 @@ auto GrilaCarteziana::inside_the_polygon(const int pol_lines, vector<float>& pol
   }
   return paritate;
 }
+
+
+auto GrilaCarteziana::intensificare_pixel(int x, int y, double length) -> void 
+{
+	draw_square_point(x, y, (round(fabs (length))) * 2, "red");
+}
+
+
+auto GrilaCarteziana::conv_scan_pm_dreapta_antialiased(int x0, int x1, int y0, int y1) -> void
+{
+   // utilizam tabela de intensitate Gupta-Sproull 
+   // weighted area sampling, pixeli - baza circulara
+
+   int dx = x1 - x0;
+   int dy = y1 - y0;
+
+   int d = 2 * dy - dx;
+   int incrE = 2 * dy;
+   int incrNE = 2 * ( dy - dx );
+
+   int doivdx = 0; // v == 0 pentru pixelul initial
+
+   // calculul in prealabil al numitorului distantei D
+   double numitorinversat = 1.0 / (2.0 * sqrt(dx*dx + dy*dy));
+   
+   double doidxnumitorinversat = 2.0 * dx * numitorinversat;
+
+   int x = x0;
+   int y = y0;
+
+   intensificare_pixel(x, y, 0);
+   intensificare_pixel(x, y+1, doidxnumitorinversat);
+   intensificare_pixel(x, y-1, doidxnumitorinversat);
+
+   while (x < x1) {
+      if (d < 0) { // alegem E
+         doivdx = d + dx;
+         d += incrE;
+         x++;
+      }
+      else { // alegem NE
+         doivdx = d - dx;
+         d += incrNE;
+         x++; y++;
+      }
+      intensificare_pixel(x, y, doivdx * numitorinversat);
+      intensificare_pixel(x, y+1, doidxnumitorinversat - doivdx * numitorinversat);
+      intensificare_pixel(x, y-1, doidxnumitorinversat + doivdx * numitorinversat);
+   }
+}
+
 
 GrilaCarteziana::GrilaCarteziana()
 {
