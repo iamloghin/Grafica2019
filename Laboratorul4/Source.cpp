@@ -1,10 +1,13 @@
 #include "GrilaCarteziana.h"
 #include <cstdlib>
 #include <list>
+
+#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+
 using namespace std;
 unsigned char prevKey;
 
-#define numar 10
+#define numar 15
 
 auto grila = new GrilaCarteziana(numar);
 

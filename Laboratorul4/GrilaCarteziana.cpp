@@ -12,39 +12,40 @@ GrilaCarteziana::GrilaCarteziana(const int numar)
 
 void GrilaCarteziana::drawLine()
 {	
-	const float negXPoint = -numar / (numar + DIST);
-	const float pozXPoint = numar / (numar + DIST);
+	const auto negXPoint = -1 + marginDistance;
+	const auto pozXPoint = 1 - marginDistance;
 
-    glLineWidth(3.0);
-
+    glLineWidth(4.0);
 	glColor3f(1.0, 0.0, 0.0);
 
 	glBegin(GL_LINES); 
 		glVertex2f(negXPoint,pozXPoint);
-		glVertex2f(pozXPoint, 3 / (numar + DIST));
+		glVertex2f(pozXPoint, 2.5 / (cellsNumber + DIST));
 	glEnd();
 
 	glColor3f(1.0, 0.0, 0.0);
 	glBegin(GL_LINES);
 		glVertex2f(negXPoint,negXPoint);
-		glVertex2f(pozXPoint,(-1/(numar + DIST)));
+		glVertex2f(pozXPoint,(-0.5 / (cellsNumber + DIST)));
 	glEnd();
 
-	SegmentDreapta3 (-numar,numar, numar,(3),2);
-	SegmentDreapta3 (-numar, -numar, numar, -1, 0);
+	SegmentDreapta3(0,numar, numar, 10,2);
+	SegmentDreapta3(0, 0, numar, 7, 0);
 }
 
 void GrilaCarteziana::drawGrid()
 {  
-	float i;
-	const float endXPoint = -numar / (numar + DIST);
-	const float startXPoint = numar / (numar + DIST);
-	
+	cellsNumber = static_cast<float>(numar) / 2;
+	marginDistance = 1 - (cellsNumber / (cellsNumber + DIST));
+	const auto startXPoint = -1 + marginDistance;
+	const auto endXPoint = 1 - marginDistance;
+
+	glLineWidth(1.0);
 	glColor3f(0.1,0.1,0.1);
 
-	for(auto i = -numar; i <= numar; i++)
+	for(float i = -cellsNumber; i <= cellsNumber; i++)
 	{
-		const auto commonYPoint = static_cast<float>(i / (numar + DIST));
+		const auto commonYPoint = static_cast<float>(i / (cellsNumber + DIST));
 
         glBegin(GL_LINES); 
 			glVertex2f(startXPoint, commonYPoint);
@@ -52,10 +53,10 @@ void GrilaCarteziana::drawGrid()
 		glEnd();  
 	}
 
-	for(auto i= -numar; i <= numar; i++)
+	for(auto i= -cellsNumber; i <= numar; i++)
 	{
-		const auto commonXPoint = static_cast<float>(i / (numar + DIST));
-
+		const auto commonXPoint = static_cast<float>(i / (cellsNumber + DIST));
+	
 		glBegin(GL_LINES); 
 			glVertex2f(commonXPoint,endXPoint);
 			glVertex2f(commonXPoint,startXPoint);
@@ -65,47 +66,45 @@ void GrilaCarteziana::drawGrid()
 
 void GrilaCarteziana::writePixel(int i, int j)
 {
-	glColor3f(0.1,0.1,0.1); 
+	glColor3f(0.3,0.3,0.3);
 	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 
+	const auto point_x_position = i + -cellsNumber;
+	const auto point_y_position = j + -cellsNumber;
+
 	glBegin(GL_POLYGON);
-		for (auto k = 0; k <= 360; k += 5)
+		for (float k = 0; k <= 360; k += 0.5)
 		{
-			glVertex2f( (i * (2 - 2*DIST) + sin(k) * (DIST/2)) / (numar+DIST), 
-						(j * (2 - 2*DIST) + cos(k) * (DIST/2)) / (numar+DIST));
+			const float radius = 0.35;
+			const auto output_x = static_cast<float>(point_x_position + radius * sin(k)) / (cellsNumber + DIST);
+			const auto output_y = static_cast<float>(point_y_position + radius * cos(k)) / (cellsNumber + DIST);
+			glVertex2f(output_x, output_y);
 		}
 	glEnd();
 }
 
-void GrilaCarteziana::pixels(int x, int y, int t, int dis)
+void GrilaCarteziana::pixels(int x, int y, int length)
 {
-	t /= 2;
-	if(dis == 0)
+	length = length / 2;
+	for(auto i = -length; i <= length; i++)
 	{
-		for(auto i = -t; i <= t; i++)
-		{
-			writePixel(x + i, y);
-		}
-	}
-	for(auto i = -t; i <= t; i++)
-	{
-		writePixel(x, y + i);
+		writePixel(x,	y + i);
 	}
 }
 
-void GrilaCarteziana::SegmentDreapta3(int fromX, int fromY, int toX, int toY, unsigned int bold=0)
+void GrilaCarteziana::SegmentDreapta3(const int from_x, const int from_y, const int to_x, const int to_y, const unsigned int bold = 0)
 {
-	auto dx = toX - fromX, dy = toY - fromY;
-	auto x = fromX, y = fromY;
-	
-	if(fromY < toY) {
+	auto dx = to_x - from_x;
+	auto dy = to_y - from_y;
+	auto x = from_x, y = from_y;
+
+	if(from_y < to_y) {
 		auto d = 2*dy - dx, 
 			 dE = 2*dy,
 			 dNE = 2*(dy-dx);
 
-		pixels(x, y,bold,1);
-
-		while(x < toX) {
+		pixels(x, y,bold);
+		while(x < to_x) {
 			if(d <= 0)
 			{
 				d += dE;
@@ -117,18 +116,18 @@ void GrilaCarteziana::SegmentDreapta3(int fromX, int fromY, int toX, int toY, un
 				x++;
 				y++;
 			}
-			pixels(x, y,bold, 1);
+			pixels(x, y,bold);
 		}
 	}	
 	else {		
-		if(toY < fromY) {
-			auto dy = fromY - toY, 
+		if(to_y < from_y) {
+			auto dy = from_y - to_y, 
 				 d = 2*dy - dx, 
 				 dE = 2*dy, 
 				 dNE = 2*(dy-dx);
 
-			pixels(x, y,bold,1);
-			while(x < toX) {
+			pixels(x, y,bold);
+			while(x < to_x) {
 				if(d <= 0)
 				{
 					d += dE;
@@ -140,7 +139,7 @@ void GrilaCarteziana::SegmentDreapta3(int fromX, int fromY, int toX, int toY, un
 					x++;
 					y--;
 				}
-				pixels(x, y,bold,1);
+				pixels(x, y,bold);
 			}
 		}
 	}
