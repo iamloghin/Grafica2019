@@ -232,7 +232,7 @@ auto GrilaCarteziana::draw_pixels() -> void
 		}
 }
 
-
+// http://alienryderflex.com/polygon/
 auto GrilaCarteziana::inside_the_polygon(const int pol_lines, vector<float>& pol_X_lines, vector<float>& pol_Y_lines, float point_x, float point_y) -> int
 {
   int i, j, paritate = 0;
