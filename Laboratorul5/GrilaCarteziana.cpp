@@ -88,11 +88,11 @@ auto GrilaCarteziana::draw_round_point(const int point_x, const int point_y, con
 
 	glBegin(GL_POLYGON);
 		float angle = 0;
+		const float radius = 0.35;
 		while(true)
 		{
 			if(angle >= 2*PI) break;
 
-			const float radius = 0.35;
 			const auto output_x = (point_x_position + radius * sin(angle)) / (number_cells_ + dist_);
 			const auto output_y = (point_y_position + radius * cos(angle)) / (number_cells_ + dist_);
 			glVertex2f(output_x, output_y);
@@ -175,22 +175,6 @@ auto GrilaCarteziana::draw_ellipse(const int origin_x, const int origin_y, const
 			glVertex2f(output_x, output_y);
 		}
 	glEnd();
-
-	/*for (auto j = number_ / 4 + 1; j >= 0; j--)
-	{
-		const float point_y_position = static_cast<float>((-number_cells_ + j) / (number_cells_ + dist_) - dist_margin_ / 2);
-		const float point_x_position = cos(asin((point_y_position - output_origin_y) / calculated_y_radius) - PI) * calculated_x_radius + output_origin_x;
-
-		for(auto i = 0; i <= number_ / 2; i++)
-		{
-			const float actual_x = static_cast<float>((-number_cells_ + i) / (number_cells_ + dist_) - dist_margin_ / 2);
-			if (actual_x >= point_x_position - 0.04)
-			{
-				draw_round_point(i, j, "gray");
-			}
-		}
-		draw_round_point(13, 0, "gray");
-	}*/
 }
 
 void GrilaCarteziana::draw_ellipse_origin(const int radius) const
@@ -303,37 +287,6 @@ void GrilaCarteziana::umplereElipsa(int x0, int y0, int a, int b)
 		}
 	}
 }
-
-//void GrilaCarteziana::AfisareCerc4(int R)
-//{
-//	int x = 0, y = R;
-//	int d = 1 - R;
-//	int dE = 3, dSE = -2 * R + 5;
-//	draw_round_point(y, x, "gray");
-//	draw_round_point(y - 1, x, "gray");
-//	draw_round_point(y + 1, x, "gray");
-//	while (y > x)
-//	{
-//		if (d < 0)
-//		{
-//			d += dE;
-//			dE += 2;
-//			dSE += 2;
-//		}
-//		else
-//		{
-//			d += dSE;
-//			dE += 2;
-//			dSE += 4;
-//			y--;
-//		}
-//		x++;
-//		draw_round_point(y, x, "gray");
-//		draw_round_point(y - 1, x, "gray");
-//		draw_round_point(y + 1, x, "gray");
-//	}
-//
-//}
 
 void GrilaCarteziana::afisareCerc4(int R)
 {

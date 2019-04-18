@@ -94,54 +94,30 @@ void GrilaCarteziana::pixels(int x, int y, int length)
 
 void GrilaCarteziana::SegmentDreapta3(const int from_x, const int from_y, const int to_x, const int to_y, const unsigned int bold = 0)
 {
-	auto dx = to_x - from_x;
-	auto dy = to_y - from_y;
-	auto x = from_x, y = from_y;
+	int dx = to_x - from_x;
+	int x = from_x, y = from_y;
+	float m = ((to_y - from_y) / static_cast<float>(to_x - from_x));
+	int i = m > 0 ? 1: -1;
+	int dy = i * (to_y - from_y);
 
-	if(from_y < to_y) {
-		auto d = 2*dy - dx, 
-			 dE = 2*dy,
-			 dNE = 2*(dy-dx);
+	auto d = 2*dy - dx, 
+		 dE = 2*dy,
+		 dNE = 2*(dy-dx);
 
+	pixels(x, y,bold);
+	while(x < to_x) {
+		if(d <= 0)
+		{
+			d += dE;
+			x++;
+		}
+		else
+		{
+			d +=dNE;
+			x++;
+			y += i;
+		}
 		pixels(x, y,bold);
-		while(x < to_x) {
-			if(d <= 0)
-			{
-				d += dE;
-				x++;
-			}
-			else
-			{
-				d +=dNE;
-				x++;
-				y++;
-			}
-			pixels(x, y,bold);
-		}
-	}	
-	else {		
-		if(to_y < from_y) {
-			auto dy = from_y - to_y, 
-				 d = 2*dy - dx, 
-				 dE = 2*dy, 
-				 dNE = 2*(dy-dx);
-
-			pixels(x, y,bold);
-			while(x < to_x) {
-				if(d <= 0)
-				{
-					d += dE;
-					x++;
-				}
-				else
-				{
-					d +=dNE;
-					x++;
-					y--;
-				}
-				pixels(x, y,bold);
-			}
-		}
 	}
 }
 
