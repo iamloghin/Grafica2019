@@ -176,7 +176,7 @@ auto GrilaCarteziana::draw_ellipse(const int origin_x, const int origin_y, const
 		}
 	glEnd();
 
-	for (auto j = number_ / 4 + 1; j >= 0; j--)
+	/*for (auto j = number_ / 4 + 1; j >= 0; j--)
 	{
 		const float point_y_position = static_cast<float>((-number_cells_ + j) / (number_cells_ + dist_) - dist_margin_ / 2);
 		const float point_x_position = cos(asin((point_y_position - output_origin_y) / calculated_y_radius) - PI) * calculated_x_radius + output_origin_x;
@@ -190,12 +190,8 @@ auto GrilaCarteziana::draw_ellipse(const int origin_x, const int origin_y, const
 			}
 		}
 		draw_round_point(13, 0, "gray");
-	}
+	}*/
 }
-
-// https://community.khronos.org/t/how-to-draw-an-oval/13428
-// origin: point of the left down corner + table margin error
-// radius: number of cells from the origin
 
 void GrilaCarteziana::draw_ellipse_origin(const int radius) const
 {
@@ -235,14 +231,6 @@ auto GrilaCarteziana::draw_pixels() -> void
 			draw_round_point(i, j, "");
 		}
 }
-
-
-// WIP
-// nvert: Number of vertices in the polygon. Whether to repeat the first vertex at the end has been discussed in the article referred above.
-// vertx, verty: Arrays containing the x- and y-coordinates of the polygon's vertices.
-// testx, testy: X- and y-coordinate of the test point.
-// paritate: 0 means even and 1 means odd
-// https://wrf.ecse.rpi.edu/Research/Short_Notes/pnpoly.html
 
 
 auto GrilaCarteziana::inside_the_polygon(const int pol_lines, vector<float>& pol_X_lines, vector<float>& pol_Y_lines, float point_x, float point_y) -> int
@@ -304,6 +292,121 @@ auto GrilaCarteziana::conv_scan_pm_dreapta_antialiased(int x0, int x1, int y0, i
       intensificare_pixel(x, y+1, doidxnumitorinversat - doivdx * numitorinversat);
       intensificare_pixel(x, y-1, doidxnumitorinversat + doivdx * numitorinversat);
    }
+}
+
+void GrilaCarteziana::umplereelipsa(int x0, int y0, int a, int b)
+{
+	int xi = 0, x = 0, y = -b;
+	double fxpyp = 0.0;
+	double deltaV, deltaNV, deltaN;
+	draw_round_point(x + x0, y + y0, "gray");
+	// regiunea 1
+	while (a*a*(y - 0.5) < b*b*(x + 1))
+	{
+		deltaV = b * b * (-2 * x + 1);
+		deltaNV = b * b * (-2 * x + 1) + a * a * (2 * y + 1);
+		if (fxpyp + deltaV <= 0.0)
+		{
+			// V este in interior
+			fxpyp += deltaV;
+			x--;
+		}
+		else if (fxpyp + deltaNV <= 0.0)
+		{
+			// NV este in interior
+			fxpyp += deltaNV;
+			x--;y++;
+		}
+		for(auto i = x + x0; i <= x0; i++)
+		{
+			draw_round_point(i, y + y0, "gray");
+		}
+
+	}
+	// regiunea 2
+	while (y < 0)
+	{
+		deltaNV = b * b * (-2 * x + 1) + a * a * (2 * y + 1);
+		deltaN = a * a*(2 * y + 1);
+		if (fxpyp + deltaNV <= 0.0)
+		{
+			// NV este in interior
+			fxpyp += deltaNV;
+			x--;y++;
+		}
+		else
+		{
+			// N este in interior
+			fxpyp += deltaN;
+			y++;
+		}
+		for (auto i = x + x0; i <= x0; i++)
+		{
+			draw_round_point(i, y + y0, "gray");
+		}
+	}
+}
+
+//void GrilaCarteziana::AfisareCerc4(int R)
+//{
+//	int x = 0, y = R;
+//	int d = 1 - R;
+//	int dE = 3, dSE = -2 * R + 5;
+//	draw_round_point(y, x, "gray");
+//	draw_round_point(y - 1, x, "gray");
+//	draw_round_point(y + 1, x, "gray");
+//	while (y > x)
+//	{
+//		if (d < 0)
+//		{
+//			d += dE;
+//			dE += 2;
+//			dSE += 2;
+//		}
+//		else
+//		{
+//			d += dSE;
+//			dE += 2;
+//			dSE += 4;
+//			y--;
+//		}
+//		x++;
+//		draw_round_point(y, x, "gray");
+//		draw_round_point(y - 1, x, "gray");
+//		draw_round_point(y + 1, x, "gray");
+//	}
+//
+//}
+
+void GrilaCarteziana::AfisareCerc4(int R)
+{
+	int x = R, y = 0;
+	int d = 1 - R;
+	int dN = 3, dNV = -2 * R + 5;
+	draw_round_point(x, y, "gray");
+	draw_round_point(x - 1, y, "gray");
+	draw_round_point(x + 1, y, "gray");
+	while (y < x)
+	{
+		if (d < 0)
+		{
+			d += dN;
+			dN += 2;
+			dNV += 2;
+		}
+		else
+		{
+			d += dNV;
+			dN += 2;
+			dNV += 4;
+			x--;
+		}
+		y++;
+		draw_round_point(x, y, "gray");
+		draw_round_point(x - 1, y, "gray");
+		draw_round_point(x + 1, y, "gray");
+	}
+
 }
 
 

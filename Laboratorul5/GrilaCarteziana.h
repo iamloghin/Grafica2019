@@ -41,5 +41,7 @@ class GrilaCarteziana
 		void draw_pixels();
 		void intensificare_pixel(int x, int y, double length);
 	    void conv_scan_pm_dreapta_antialiased(int x0, int x1, int y0, int y1);
+		void umplereelipsa(int x0, int y0, int a, int b);
+		void AfisareCerc4(int R);
 };
 
