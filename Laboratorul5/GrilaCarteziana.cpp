@@ -232,7 +232,7 @@ auto GrilaCarteziana::draw_pixels() -> void
 		}
 }
 
-// http://alienryderflex.com/polygon/
+
 auto GrilaCarteziana::inside_the_polygon(const int pol_lines, vector<float>& pol_X_lines, vector<float>& pol_Y_lines, float point_x, float point_y) -> int
 {
   int i, j, paritate = 0;
@@ -340,7 +340,7 @@ void GrilaCarteziana::afisareCerc4(int R)
 	int x = R, y = 0;
 	int d = 1 - R;
 	int dN = 3, dNV = -2 * R + 5;
-	pixels(x, y, 2);
+	pixels(x, y, 1);
 	while (y < x)
 	{
 		if (d < 0)
@@ -357,13 +357,12 @@ void GrilaCarteziana::afisareCerc4(int R)
 			x--;
 		}
 		y++;
-		pixels(x, y, 2);
+		pixels(x, y, 1);
 	}
 }
 
 void GrilaCarteziana::pixels(int x, int y, int length)
 {
-	length = length / 2;
 	for(auto i = -length; i <= length; i++)
 	{
 		draw_round_point(x + i, y, "gray");
