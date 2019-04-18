@@ -251,50 +251,7 @@ auto GrilaCarteziana::intensificare_pixel(int x, int y, double length) -> void
 }
 
 
-auto GrilaCarteziana::conv_scan_pm_dreapta_antialiased(int x0, int x1, int y0, int y1) -> void
-{
-   // utilizam tabela de intensitate Gupta-Sproull 
-   // weighted area sampling, pixeli - baza circulara
-
-   int dx = x1 - x0;
-   int dy = y1 - y0;
-
-   int d = 2 * dy - dx;
-   int incrE = 2 * dy;
-   int incrNE = 2 * ( dy - dx );
-
-   int doivdx = 0; // v == 0 pentru pixelul initial
-
-   // calculul in prealabil al numitorului distantei D
-   double numitorinversat = 1.0 / (2.0 * sqrt(dx*dx + dy*dy));
-   
-   double doidxnumitorinversat = 2.0 * dx * numitorinversat;
-
-   int x = x0;
-   int y = y0;
-
-   intensificare_pixel(x, y, 0);
-   intensificare_pixel(x, y+1, doidxnumitorinversat);
-   intensificare_pixel(x, y-1, doidxnumitorinversat);
-
-   while (x < x1) {
-      if (d < 0) { // alegem E
-         doivdx = d + dx;
-         d += incrE;
-         x++;
-      }
-      else { // alegem NE
-         doivdx = d - dx;
-         d += incrNE;
-         x++; y++;
-      }
-      intensificare_pixel(x, y, doivdx * numitorinversat);
-      intensificare_pixel(x, y+1, doidxnumitorinversat - doivdx * numitorinversat);
-      intensificare_pixel(x, y-1, doidxnumitorinversat + doivdx * numitorinversat);
-   }
-}
-
-void GrilaCarteziana::umplereelipsa(int x0, int y0, int a, int b)
+void GrilaCarteziana::umplereElipsa(int x0, int y0, int a, int b)
 {
 	int xi = 0, x = 0, y = -b;
 	double fxpyp = 0.0;
@@ -378,14 +335,12 @@ void GrilaCarteziana::umplereelipsa(int x0, int y0, int a, int b)
 //
 //}
 
-void GrilaCarteziana::AfisareCerc4(int R)
+void GrilaCarteziana::afisareCerc4(int R)
 {
 	int x = R, y = 0;
 	int d = 1 - R;
 	int dN = 3, dNV = -2 * R + 5;
-	draw_round_point(x, y, "gray");
-	draw_round_point(x - 1, y, "gray");
-	draw_round_point(x + 1, y, "gray");
+	pixels(x, y, 2);
 	while (y < x)
 	{
 		if (d < 0)
@@ -402,11 +357,17 @@ void GrilaCarteziana::AfisareCerc4(int R)
 			x--;
 		}
 		y++;
-		draw_round_point(x, y, "gray");
-		draw_round_point(x - 1, y, "gray");
-		draw_round_point(x + 1, y, "gray");
+		pixels(x, y, 2);
 	}
+}
 
+void GrilaCarteziana::pixels(int x, int y, int length)
+{
+	length = length / 2;
+	for(auto i = -length; i <= length; i++)
+	{
+		draw_round_point(x + i, y, "gray");
+	}
 }
 
 
